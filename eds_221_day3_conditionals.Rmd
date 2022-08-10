@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ```{r}
 library(tidyverse)
+library(palmerpenguins)
 ```
 
 ### `if` Statements
@@ -82,3 +83,49 @@ tatooine_endor_naboo <- starwars |>
 ## In words: does the value in the homeworld variable for that row exists IN that vector c("tatooine", "naboo", "endor")
 ```
 
+### `group_by() %>% summarize()`
+
+```{r}
+penguins |> 
+  group_by(species, island) |> 
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE))
+
+penguins |> group_by(species) |> 
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE))
+ 
+ ### Adding sample size : add n = n() after bill length
+ 
+penguins |> group_by(species) |> 
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE), n = n())
+
+ 
+```
+
+
+```{r}
+ # 1. Find the mean and sd of character height in starwars grouped by homeworld
+ 
+ starwars |> 
+   group_by(homeworld) |> 
+   summarize(max_height = max(height, na.rm = TRUE),
+             min_height = min(height, na.rm = TRUE))
+ 
+ 
+ # 2. Find the maximum & minimum flipper length, and sample sie, for each species of penguins
+ 
+ penguins |> 
+   group_by(species) |> 
+   summarize(max_flipper = max(flipper_length_mm, na.rm = TRUE),
+             min_flipper = min(flipper_length_mm, na.rm = TRUE))
+ 
+ ## Add second group is you wanted to know the sex
+ 
+ penguins |> 
+   group_by(species, sex) |> 
+   summarize(max_flipper = max(flipper_length_mm, na.rm = TRUE),
+             min_flipper = min(flipper_length_mm, na.rm = TRUE))
+ 
+### in console: unique(penguins$species)

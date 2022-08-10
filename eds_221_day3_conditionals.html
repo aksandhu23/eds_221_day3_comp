@@ -370,7 +370,8 @@ pre code {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(palmerpenguins)</code></pre>
 <div id="if-statements" class="section level3">
 <h3><code>if</code> Statements</h3>
 <pre class="r"><code>burrito &lt;- 3
@@ -430,6 +431,94 @@ tatooine_endor_naboo &lt;- starwars |&gt;
   filter(homeworld %in% c(&quot;tatooine&quot;, &quot;naboo&quot;, &quot;endor&quot;))
 
 ## In words: does the value in the homeworld variable for that row exists IN that vector c(&quot;tatooine&quot;, &quot;naboo&quot;, &quot;endor&quot;)</code></pre>
+</div>
+<div id="group_by-summarize" class="section level3">
+<h3><code>group_by() %&gt;% summarize()</code></h3>
+<pre class="r"><code>penguins |&gt; 
+  group_by(species, island) |&gt; 
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 5 × 4
+## # Groups:   species [3]
+##   species   island    mean_bill_length sd_bill_length
+##   &lt;fct&gt;     &lt;fct&gt;                &lt;dbl&gt;          &lt;dbl&gt;
+## 1 Adelie    Biscoe                39.0           2.48
+## 2 Adelie    Dream                 38.5           2.47
+## 3 Adelie    Torgersen             39.0           3.03
+## 4 Chinstrap Dream                 48.8           3.34
+## 5 Gentoo    Biscoe                47.5           3.08</code></pre>
+<pre class="r"><code>penguins |&gt; group_by(species) |&gt; 
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   species   mean_bill_length sd_bill_length
+##   &lt;fct&gt;                &lt;dbl&gt;          &lt;dbl&gt;
+## 1 Adelie                38.8           2.66
+## 2 Chinstrap             48.8           3.34
+## 3 Gentoo                47.5           3.08</code></pre>
+<pre class="r"><code> ### Adding sample size : add n = n() after bill length
+ 
+penguins |&gt; group_by(species) |&gt; 
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE),
+            sd_bill_length = sd(bill_length_mm, na.rm = TRUE), n = n())</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   species   mean_bill_length sd_bill_length     n
+##   &lt;fct&gt;                &lt;dbl&gt;          &lt;dbl&gt; &lt;int&gt;
+## 1 Adelie                38.8           2.66   152
+## 2 Chinstrap             48.8           3.34    68
+## 3 Gentoo                47.5           3.08   124</code></pre>
+<pre class="r"><code> # 1. Find the mean and sd of character height in starwars grouped by homeworld
+ 
+ starwars |&gt; 
+   group_by(homeworld) |&gt; 
+   summarize(max_height = max(height, na.rm = TRUE),
+             min_height = min(height, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 49 × 3
+##    homeworld      max_height min_height
+##    &lt;chr&gt;               &lt;int&gt;      &lt;int&gt;
+##  1 Alderaan              191        150
+##  2 Aleen Minor            79         79
+##  3 Bespin                175        175
+##  4 Bestine IV            180        180
+##  5 Cato Neimoidia        191        191
+##  6 Cerea                 198        198
+##  7 Champala              196        196
+##  8 Chandrila             150        150
+##  9 Concord Dawn          183        183
+## 10 Corellia              180        170
+## # … with 39 more rows
+## # ℹ Use `print(n = ...)` to see more rows</code></pre>
+<pre class="r"><code> # 2. Find the maximum &amp; minimum flipper length, and sample sie, for each species of penguins
+ 
+ penguins |&gt; 
+   group_by(species) |&gt; 
+   summarize(max_flipper = max(flipper_length_mm, na.rm = TRUE),
+             min_flipper = min(flipper_length_mm, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   species   max_flipper min_flipper
+##   &lt;fct&gt;           &lt;int&gt;       &lt;int&gt;
+## 1 Adelie            210         172
+## 2 Chinstrap         212         178
+## 3 Gentoo            231         203</code></pre>
+<pre class="r"><code> ## Add second group is you wanted to know the sex
+ 
+ penguins |&gt; 
+   group_by(species, sex) |&gt; 
+   summarize(max_flipper = max(flipper_length_mm, na.rm = TRUE),
+             min_flipper = min(flipper_length_mm, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 8 × 4
+## # Groups:   species [3]
+##   species   sex    max_flipper min_flipper
+##   &lt;fct&gt;     &lt;fct&gt;        &lt;int&gt;       &lt;int&gt;
+## 1 Adelie    female         202         172
+## 2 Adelie    male           210         178
+## 3 Adelie    &lt;NA&gt;           193         179
+## 4 Chinstrap female         202         178
+## 5 Chinstrap male           212         187
+## 6 Gentoo    female         222         203
+## 7 Gentoo    male           231         208
+## 8 Gentoo    &lt;NA&gt;           217         214</code></pre>
+<pre class="r"><code>### in console: unique(penguins$species)</code></pre>
 </div>
 
 
